@@ -26,7 +26,7 @@ public class Dbinitializer
             .Key(x => x.Color, KeyType.Text)
             .CreateAsync();
 
-        var count = await db.CountEstimatedAsync<Item>();
+        var count = await db.CountAsync<Item>();
         
         Console.WriteLine($"Item count: {count}");
         
