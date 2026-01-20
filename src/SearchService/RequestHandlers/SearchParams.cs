@@ -1,0 +1,14 @@
+using System;
+
+namespace SearchService.RequestHandlers;
+
+public class SearchParams
+{
+    public string SearchTerms { get; set; }
+    public int PageNumber { get; set; } = 1;
+    public int PageSize { get; set; } = 3;
+    public string Seller { get; set; }
+    public string Winner { get; set; }
+    public string OrderBy { get; set; }
+    public string FilterBy { get; set; }
+}
