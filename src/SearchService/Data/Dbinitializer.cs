@@ -33,7 +33,7 @@ public class Dbinitializer
         if (count == 0)
         {
             Console.WriteLine("No data - attempting to seed");
-            var itemData = await File.ReadAllTextAsync("Data/auctions.json");
+            var itemData = await File.ReadAllTextAsync("Data/auctions.json"); // will removed to get from auctionService
 
             var options = new JsonSerializerOptions{PropertyNameCaseInsensitive = true};
 
