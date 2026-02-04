@@ -10,6 +10,7 @@
     <Folder Include="Controllers\" />
     <Folder Include="Models\" />
     <Folder Include="RequestHandlers\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>

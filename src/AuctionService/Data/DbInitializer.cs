@@ -1,5 +1,6 @@
 using AuctionService.Entities;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace AuctionService.Data;
 
@@ -14,7 +15,32 @@ public class DbInitializer
 
     private static void SeedData(AuctionDBContext context)
     {
-        context.Database.Migrate();
+        // Ensure the database is created
+        try
+        {
+            context.Database.Migrate();
+        }
+        catch (Exception ex) when (ex.InnerException is PostgresException pgEx && pgEx.SqlState == "3D000")
+        {
+            Console.WriteLine("Database does not exist. Creating database...");
+            
+            // Get connection string and create database
+            var connectionString = context.Database.GetConnectionString();
+            var builder = new NpgsqlConnectionStringBuilder(connectionString);
+            var databaseName = builder.Database;
+            builder.Database = "postgres"; // Connect to default postgres database
+            
+            using var connection = new NpgsqlConnection(builder.ToString());
+            connection.Open();
+            using var command = connection.CreateCommand();
+            command.CommandText = $"CREATE DATABASE \"{databaseName}\"";
+            command.ExecuteNonQuery();
+            
+            Console.WriteLine($"Database '{databaseName}' created successfully.");
+            
+            // Now run migrations on the newly created database
+            context.Database.Migrate();
+        }
 
         if (context.Auctions.Any())
         {   
@@ -32,6 +58,8 @@ public class DbInitializer
                 ReservePrice = 20000,
                 Seller = "bob",
                 AuctionEnd = DateTime.UtcNow.AddDays(10),
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
                 Item = new Item
                 {
                     Make = "Ford",
@@ -50,6 +78,8 @@ public class DbInitializer
                 ReservePrice = 90000,
                 Seller = "alice",
                 AuctionEnd = DateTime.UtcNow.AddDays(60),
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
                 Item = new Item
                 {
                     Make = "Bugatti",
@@ -67,6 +97,8 @@ public class DbInitializer
                 Status = Status.Active,
                 Seller = "bob",
                 AuctionEnd = DateTime.UtcNow.AddDays(4),
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
                 Item = new Item
                 {
                     Make = "Ford",
@@ -85,6 +117,8 @@ public class DbInitializer
                 ReservePrice = 50000,
                 Seller = "tom",
                 AuctionEnd = DateTime.UtcNow.AddDays(-10),
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
                 Item = new Item
                 {
                     Make = "Mercedes",
@@ -103,6 +137,8 @@ public class DbInitializer
                 ReservePrice = 20000,
                 Seller = "alice",
                 AuctionEnd = DateTime.UtcNow.AddDays(30),
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
                 Item = new Item
                 {
                     Make = "BMW",
@@ -121,6 +157,8 @@ public class DbInitializer
                 ReservePrice = 20000,
                 Seller = "bob",
                 AuctionEnd = DateTime.UtcNow.AddDays(45),
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
                 Item = new Item
                 {
                     Make = "Ferrari",
@@ -139,6 +177,8 @@ public class DbInitializer
                 ReservePrice = 150000,
                 Seller = "alice",
                 AuctionEnd = DateTime.UtcNow.AddDays(13),
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
                 Item = new Item
                 {
                     Make = "Ferrari",
@@ -156,6 +196,8 @@ public class DbInitializer
                 Status = Status.Active,
                 Seller = "bob",
                 AuctionEnd = DateTime.UtcNow.AddDays(19),
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
                 Item = new Item
                 {
                     Make = "Audi",
@@ -174,6 +216,8 @@ public class DbInitializer
                 ReservePrice = 20000,
                 Seller = "tom",
                 AuctionEnd = DateTime.UtcNow.AddDays(20),
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
                 Item = new Item
                 {
                     Make = "Audi",
@@ -192,6 +236,8 @@ public class DbInitializer
                 ReservePrice = 20000,
                 Seller = "bob",
                 AuctionEnd = DateTime.UtcNow.AddDays(48),
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
                 Item = new Item
                 {
                     Make = "Ford",

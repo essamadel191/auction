@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace AuctionService.Data.Migrations
+namespace AuctionService.Migrations
 {
     /// <inheritdoc />
-    public partial class Add_AuctionNullable : Migration
+    public partial class replacenowtoUtcNow : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

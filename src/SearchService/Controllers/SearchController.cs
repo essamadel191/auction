@@ -63,7 +63,7 @@ namespace SearchService.Controllers
 
             return Ok(new
                 {
-                    results = result.Results,
+                    results = result.Results ?? new List<Item> { new Item { Make = "Not Found", Model = "", Color = "", Mileage = 0, Year = 0, ImageUrl = "" } },
                     pageCount = result.PageCount,
                     totalCount = result.TotalCount
                 }
