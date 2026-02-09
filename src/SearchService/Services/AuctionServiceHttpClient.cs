@@ -18,13 +18,19 @@ public class AuctionServiceHttpClient
     public async Task<List<Item>> GetItemsForSearchDb()
     {
         var db = await DB.InitAsync("SearchServiceDB");
-        var lastUpdated = db.Find<Item,string>()
+        var lastUpdated = await db.Find<Item, string>()
             .Sort(x=> x.Descending(x => x.UpdatedAt))
-            .Project(x=> x.UpdatedAt.ToString())
+            .Project(x=> x.UpdatedAt.ToString("O"))
             .ExecuteFirstAsync();
 
+        var url = _config["AuctionServiceUrl"] + "api/auctions";
+        if (!string.IsNullOrWhiteSpace(lastUpdated))
+        {
+            url += "?date=" + Uri.EscapeDataString(lastUpdated);
+        }
+
         return await _httpClient.GetFromJsonAsync<List<Item>>(
-            _config["AuctionServiceUrl"] + "api/auctions?date=" + lastUpdated);
+            url);
     }
 
 }
